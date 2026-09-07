@@ -3,6 +3,7 @@ package ru.otus.numbers.client;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import ru.otus.numbers.NumbersRequest;
 import ru.otus.numbers.NumbersServiceGrpc;
@@ -49,5 +50,6 @@ public class NumbersClient {
         }
 
         channel.shutdown();
+        channel.awaitTermination(5, TimeUnit.SECONDS);
     }
 }

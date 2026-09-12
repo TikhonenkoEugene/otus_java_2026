@@ -18,6 +18,7 @@ import ru.petrelevich.service.DataStore;
 @RestController
 public class DataController {
     private static final Logger log = LoggerFactory.getLogger(DataController.class);
+    private static final String SPECIAL_ROOM_ID = "1408";
     private final DataStore dataStore;
     private final Scheduler workerPool;
 
@@ -46,7 +47,8 @@ public class DataController {
     public Flux<MessageDto> getMessagesByRoomId(@PathVariable("roomId") String roomId) {
         return Mono.just(roomId)
                 .doOnNext(room -> log.info("getMessagesByRoomId, room:{}", room))
-                .flatMapMany(dataStore::loadMessages)
+                .flatMapMany(room ->
+                        SPECIAL_ROOM_ID.equals(roomId) ? dataStore.loadAllMessages() : dataStore.loadMessages(roomId))
                 .map(message -> new MessageDto(message.msgText()))
                 .doOnNext(msgDto -> log.info("msgDto:{}", msgDto))
                 .subscribeOn(workerPool);

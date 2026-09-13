@@ -39,6 +39,7 @@ public class LoginServlet extends HttpServlet {
 
         if (adminAuthService.authenticate(login, password)) {
             var session = request.getSession();
+            request.changeSessionId();
             session.setAttribute(SESSION_ATTR_ADMIN, login);
             response.sendRedirect(request.getContextPath() + "/clients");
         } else {

@@ -1,8 +1,11 @@
 package ru.otus.crm.web;
 
+import jakarta.servlet.DispatcherType;
+import java.util.EnumSet;
 import org.eclipse.jetty.ee10.servlet.FilterHolder;
 import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee10.servlet.ServletHolder;
+import org.eclipse.jetty.http.HttpCookie;
 import org.eclipse.jetty.server.Server;
 import ru.otus.crm.controllers.AdminSessionFilter;
 import ru.otus.crm.controllers.ClientsServlet;
@@ -24,6 +27,8 @@ public class CrmWebServer {
         TemplateProcessor templateProcessor = new ThymeleafTemplateProcessor(TEMPLATES_DIR);
 
         var servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        configureSessionCookie(servletContextHandler);
+
         var loginServletHolder = new ServletHolder(new LoginServlet(templateProcessor, adminAuthService));
         // Стартовая страница ("/") и есть страница аутентификации администратора
         servletContextHandler.addServlet(loginServletHolder, "/");
@@ -31,9 +36,17 @@ public class CrmWebServer {
         servletContextHandler.addServlet(new ServletHolder(new LogoutServlet()), "/logout");
         servletContextHandler.addServlet(
                 new ServletHolder(new ClientsServlet(templateProcessor, dbServiceClient)), PROTECTED_PATH);
-        servletContextHandler.addFilter(new FilterHolder(new AdminSessionFilter()), PROTECTED_PATH, null);
+        servletContextHandler.addFilter(
+                new FilterHolder(new AdminSessionFilter()), PROTECTED_PATH, EnumSet.of(DispatcherType.REQUEST));
 
         server.setHandler(servletContextHandler);
+    }
+
+    private void configureSessionCookie(ServletContextHandler servletContextHandler) {
+        var sessionHandler = servletContextHandler.getSessionHandler();
+        sessionHandler.setHttpOnly(true);
+        sessionHandler.setSameSite(HttpCookie.SameSite.LAX);
+        sessionHandler.setSecureRequestOnly(true);
     }
 
     public void start() throws Exception {

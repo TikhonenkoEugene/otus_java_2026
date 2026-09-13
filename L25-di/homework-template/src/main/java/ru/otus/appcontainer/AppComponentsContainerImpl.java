@@ -38,6 +38,8 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
                         method -> method.getAnnotation(AppComponent.class).order()))
                 .toList();
 
+        checkUniqueOrders(configClass, componentMethods);
+
         for (Method method : componentMethods) {
             String name = method.getAnnotation(AppComponent.class).name();
             if (appComponentsByName.containsKey(name)) {
@@ -57,6 +59,19 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 
             appComponents.add(component);
             appComponentsByName.put(name, component);
+        }
+    }
+
+    private void checkUniqueOrders(Class<?> configClass, List<Method> componentMethods) {
+        Map<Integer, String> methodNameByOrder = new HashMap<>();
+        for (Method method : componentMethods) {
+            int order = method.getAnnotation(AppComponent.class).order();
+            String previousMethodName = methodNameByOrder.put(order, method.getName());
+            if (previousMethodName != null) {
+                throw new IllegalStateException(String.format(
+                        "Config class '%s' has more than one @AppComponent with order %d: '%s' and '%s'",
+                        configClass.getName(), order, previousMethodName, method.getName()));
+            }
         }
     }
 

@@ -10,7 +10,9 @@ import ru.otus.crm.dbmigrations.MigrationsExecutorFlyway;
 import ru.otus.crm.model.Address;
 import ru.otus.crm.model.Client;
 import ru.otus.crm.model.Phone;
+import ru.otus.crm.service.AdminAuthServiceImpl;
 import ru.otus.crm.service.DbServiceClientImpl;
+import ru.otus.crm.web.CrmWebServer;
 
 public class DbServiceDemo {
 
@@ -18,7 +20,11 @@ public class DbServiceDemo {
 
     public static final String HIBERNATE_CFG_FILE = "hibernate.cfg.xml";
 
-    public static void main(String[] args) {
+    private static final int WEB_SERVER_PORT = 8080;
+    private static final String ADMIN_LOGIN = "admin";
+    private static final String ADMIN_PASSWORD = "admin";
+
+    public static void main(String[] args) throws Exception {
         var configuration = new Configuration().configure(HIBERNATE_CFG_FILE);
 
         var dbUrl = configuration.getProperty("hibernate.connection.url");
@@ -51,5 +57,15 @@ public class DbServiceDemo {
 
         log.info("All clients");
         dbServiceClient.findAll().forEach(client -> log.info("client:{}", client));
+
+        var adminAuthService = new AdminAuthServiceImpl(ADMIN_LOGIN, ADMIN_PASSWORD);
+        var webServer = new CrmWebServer(WEB_SERVER_PORT, dbServiceClient, adminAuthService);
+        webServer.start();
+        log.info(
+                "Web server started at http://localhost:{}, admin login/password: {}/{}",
+                WEB_SERVER_PORT,
+                ADMIN_LOGIN,
+                ADMIN_PASSWORD);
+        webServer.join();
     }
 }

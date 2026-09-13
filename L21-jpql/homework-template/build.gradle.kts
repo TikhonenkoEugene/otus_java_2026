@@ -9,6 +9,10 @@ dependencies {
 
     implementation("org.postgresql:postgresql")
 
+    implementation("org.eclipse.jetty.ee10:jetty-ee10-servlet")
+    implementation("org.eclipse.jetty:jetty-server")
+    implementation("org.thymeleaf:thymeleaf")
+
     testImplementation("com.h2database:h2")
     testImplementation("org.junit.jupiter:junit-jupiter-engine")
     testImplementation("org.junit.jupiter:junit-jupiter-params")

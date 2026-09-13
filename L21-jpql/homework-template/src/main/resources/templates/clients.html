@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Клиенты</title>
+    <style>
+        body { font-family: sans-serif; margin: 40px; }
+        table { border-collapse: collapse; width: 400px; margin-bottom: 24px; }
+        th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+        form.inline { display: inline-flex; gap: 8px; }
+    </style>
+</head>
+<body>
+<div style="display:flex; justify-content: space-between; align-items: center;">
+    <h3>Список клиентов</h3>
+    <a href="logout">Выйти</a>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Имя</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="client : ${clients}">
+        <td th:text="${client.id}"></td>
+        <td th:text="${client.name}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<h4>Добавить клиента</h4>
+<form class="inline" action="clients" method="post">
+    <input type="text" name="name" placeholder="Имя клиента" required>
+    <button type="submit">Создать</button>
+</form>
+</body>
+</html>

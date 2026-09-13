@@ -114,3 +114,4 @@ pluginManagement {
         id("com.diffplug.spotless") version spotless
     }
 }
+include("L21-jpql:spring-web")

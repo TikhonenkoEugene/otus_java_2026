@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  pg-docker:
+    image: postgres:12
+    container_name: pg-docker
+    environment:
+      POSTGRES_USER: usr
+      POSTGRES_PASSWORD: pwd
+      POSTGRES_DB: demoDB
+    ports:
+      - "5430:5432"

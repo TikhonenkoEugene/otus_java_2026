@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход администратора</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; margin-top: 80px; }
+        .login-box { border: 1px solid #ccc; padding: 24px; border-radius: 6px; width: 260px; }
+        .error { color: #c00; margin-bottom: 12px; }
+        label { display: block; margin-bottom: 12px; }
+        input { width: 100%; box-sizing: border-box; padding: 6px; }
+        button { width: 100%; padding: 8px; }
+    </style>
+</head>
+<body>
+<div class="login-box">
+    <h3>Вход в CRM</h3>
+    <p class="error" th:if="${error}" th:text="${error}"></p>
+    <form action="login" method="post">
+        <label>Логин
+            <input type="text" name="login" autofocus>
+        </label>
+        <label>Пароль
+            <input type="password" name="password">
+        </label>
+        <button type="submit">Войти</button>
+    </form>
+</div>
+</body>
+</html>
